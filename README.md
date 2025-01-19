@@ -16,6 +16,7 @@ Following the implementation of the control logic, sensor fusion was employed to
 
 A simple interface was developed in LabVIEW to facilitate system activation and deactivation, as well as to provide real-time feedback on the system's movement.
 <p align="center">
+  
 # Mathematical Model
 
 <img src="Images_directory/MathematicalModel_Aeropendulum.PNG" alt="MathematicalModel_Aeropendulum" style="width:500px;height:250px;">
