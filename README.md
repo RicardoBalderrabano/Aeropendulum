@@ -21,15 +21,15 @@ A simple interface was developed in LabVIEW to facilitate system activation and 
 # System Simulation
 <img src="Images_directory/Simulation_Aeropendulum.PNG" alt="Simulation_Aeropendulum" style="width:1200px;height:569px;">
 # Hardware Setup
-<img src="Images_directory/Hardware_Setup.png" alt="Hardware_Setup_Aeropendulum" style="width:1200px;height:569px;">
+<img src="Images_directory/Hardware_Setup.PNG" alt="Hardware_Setup_Aeropendulum" style="width:1200px;height:569px;">
 # Sampling time
-<img src="Images_directory/SamplingTime.png" alt="SamplingTime_Aeropendulum" style="width:1200px;height:569px;">
-<img src="Images_directory/Timer_SamplingTime.png" alt="Timer_Aeropendulum" style="width:1200px;height:569px;">
+<img src="Images_directory/SamplingTime.PNG" alt="SamplingTime_Aeropendulum" style="width:1200px;height:569px;">
+<img src="Images_directory/Timer_SamplingTime.PNG" alt="Timer_Aeropendulum" style="width:1200px;height:569px;">
 # PID Tunning
-<img src="Images_directory/PID_Tunning.png" alt="PID_Tunning_Aeropendulum" style="width:1200px;height:569px;">
-<img src="Images_directory/PID_Tunning2.png" alt="PID_Tunning2_Aeropendulum" style="width:1200px;height:569px;">
+<img src="Images_directory/PID_Tunning.PNG" alt="PID_Tunning_Aeropendulum" style="width:1200px;height:569px;">
+<img src="Images_directory/PID_Tunning2.PNG" alt="PID_Tunning2_Aeropendulum" style="width:1200px;height:569px;">
 # HMI Interface
-<img src="Images_directory/Interface.png" alt="Interface_Aeropendulum" style="width:582px;height:706px;">
+<img src="Images_directory/Interface.PNG" alt="Interface_Aeropendulum" style="width:582px;height:706px;">
 # PID Control Test
-<img src="Images_directory/TestPID_Aeropendulum.png" alt="Test_PID_Aeropendulum" style="width:1200px;height:px;">
+<img src="Images_directory/TestPID_Aeropendulum.PNG" alt="Test_PID_Aeropendulum" style="width:1200px;height:px;">
 
