@@ -3,8 +3,10 @@ Aeropendulum PID control for angular position
 # Description
 
 <p align="center">
-  ![Aeropendulo1_first](Images_directory/Aeropendulo1_first.gif)
+  <img src="Images_directory/Aeropendulo1_first.gif" alt="Aeropendulum" style="width:48px;height:48px;">
 </p>
+
+
 </br>
 This project is centered on the development of a PID controller for the angular position of an aeropendulum. The primary goal was to apply concepts from system dynamics, control theory, and embedded systems programming.
 
