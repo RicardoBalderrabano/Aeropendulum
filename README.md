@@ -97,6 +97,32 @@ float Get_Angle_Inclination() {
     return x_angleC;
 }
 ```
+## Complementary Filter
+To smooth out the sensor data and combine accelerometer and gyro-scope information, a complementary filter is implemented. The filter fuses the short-term accuracy of the gyroscope with the long-term stability of the accelerometer to estimate the tilt angle.
+
+```c    
+    // Compute filter coefficient
+    a = tau / (tau + dtC);		// 0.9
+
+    // Apply complementary filter to combine accelerometer and gyroscope data
+    x_angleC = a * (x_angleC + newRate * dtC) + (1 - a) * newAngle;
+```
+## PID Controller
+The PID controller calculates the control output (motor speed) based on the error between the desired angle (setpoint) and the current angle (process variable). The proportional, integral, and derivative terms are computed and summed to generate the control signal. The output of the PID controller is then converted to a PWM signal to control the motor's speed.
+
+```c
+/* Function to implement PID control */
+float PID_Control(float setpoint, float process_variable) {
+    float error = setpoint - process_variable;	    					// Calculate the error between the desired setpoint and the current process variable
+    integral += error * 0.01; 											// Integral term accumulates the error over time
+    float derivative = (error - previous_error) / 0.01; 				// Derivative term estimates how quickly the error is changing
+    control_output = Kp * error + Ki * integral + Kd * derivative;	    // control_output combines proportional, integral, and derivative terms
+    uint32_t pwm_value = voltage_to_pwm(control_output);		    	// Compute the PWM value from the voltage required
+    previous_error = error;				    							// Store the current error to use as the previous error in the next iteration
+    return pwm_value;			    									// Return the PWM value that will be used to control the motor
+}
+```
+
 # PID Tunning
 
 To tune the PID coefficients, the Ziegler-Nichols method was used. It involves determining the critical gain (K_u) and critical period (T_u) of the system by setting the integral and derivative gains to zero and gradually increasing the proportional gain until the system reaches sustained oscillations.
@@ -105,11 +131,14 @@ To tune the PID coefficients, the Ziegler-Nichols method was used. It involves d
 <img src="Images_directory/PID_Tunning2.PNG" alt="PID_Tunning2_Aeropendulum" style="width:500px;height:250px;">
   
 # HMI Interface
+
 The Human Machine Interface (HMI) to control the aeropendulum was made using LABVIEW, it is a platform and development environment for designing systems, with a graphical visual programming language de-signed for testing, control and design hardware and software systems, simulated or real and embedded.
+
 <img src="Images_directory/Interface.PNG" alt="Interface_Aeropendulum" style="width:500px;height:250px;">
   
 # PID Control Test
 The test includes changing the reference of the desired angular position of the aeropendulum. The angles tested are 20°, 45° and 60° to ob-serve the response of the system and evaluate its ability to reach and maintain the setpoint under different conditions. The test aims to analyze the system's stability and the performance of the PID controller.
+
 <img src="Images_directory/TestPID_Aeropendulum.PNG" alt="Test_PID_Aeropendulum" style="width:500px;height:600px;">
 
 
