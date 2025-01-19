@@ -32,6 +32,7 @@ The aeropendulum system integrates several key components to achieve precise con
 The software for controlling the aeropendulum was developed using C and is executed on the STM32F445RE microcontroller. The system’s de-sign is centered around acquiring sensor data from the MPU6050, pro-cessing it with a complementary filter, and then using a PID controller to adjust the speed of brushless motor via PWM signals. A breakdown of the key components of the software is described:
 
 ## Main control loop
+The core of the program operates within a loop that continuously reads sensor data, calculates the requires motor speed using PID control, and applies the PWM signal to the motor to maintain the stability.
 ```c
   // Main loop to process incoming commands and execute PID control
   while (1) {
@@ -60,6 +61,40 @@ The software for controlling the aeropendulum was developed using C and is execu
 <img src="Images_directory/SamplingTime.PNG" alt="SamplingTime_Aeropendulum" style="width:500px;height:250px;">
 <img src="Images_directory/Timer_SamplingTime.PNG" alt="Timer_Aeropendulum" style="width:500px;height:250px;">
 
+## Sensor Data Acquisition
+The MPU6050 sensor is used to measure the tilt angle of the pendu-lum. It provides both accelerometer and gyroscope data, which are fused using a complementary filter to compute the pendulum’s inclination angle. The sensor is read via I2C communication.
+
+```c
+// Function to calculate the tilt angle using accelerometer and gyroscope data
+float Get_Angle_Inclination() {
+    // Read raw and scaled data from the MPU6050 sensor
+    MPU6050_Read_RawData(&Accel_Raw, &Gyro_Raw);
+    MPU6050_Read_ScaledData(&Accel_Scaled, &Gyro_Scaled);
+
+    // Extract accelerometer data
+    float accelY = Accel_Scaled.y;
+    float accelZ = Accel_Scaled.z;
+
+    // Compute tilt angle from accelerometer data
+    float newAngle = (atan2(accelY, accelZ) * (180.0 / M_PI)) + 90.0f;
+
+    // Get gyroscope angular velocity
+    float newRate = Gyro_Scaled.x;
+    float dtC = 0.01;  // Time interval (seconds)
+
+    // Compute filter coefficient
+    a = tau / (tau + dtC);		// 0.9
+
+    // Apply complementary filter to combine accelerometer and gyroscope data
+    x_angleC = a * (x_angleC + newRate * dtC) + (1 - a) * newAngle;
+
+    // Clamp the angle to ensure it remains within bounds
+    if (x_angleC < 0.0f) x_angleC = 0.0f;
+    if (x_angleC > 1.0f) x_angleC = x_angleC;
+
+    return x_angleC;
+}
+```
 # PID Tunning
 To tune the PID coefficients, the Ziegler-Nichols method was used. It involves determining the critical gain (K_u) and critical period (T_u) of the system by setting the integral and derivative gains to zero and gradually increasing the proportional gain until the system reaches sustained oscillations.
 <img src="Images_directory/PID_Tunning.PNG" alt="PID_Tunning_Aeropendulum" style="width:500px;height:250px;">
