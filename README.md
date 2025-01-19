@@ -20,7 +20,7 @@ A simple interface was developed in LabVIEW to facilitate system activation and 
 <img src="Images_directory/MathematicalModel_Aeropendulum.PNG" alt="MathematicalModel_Aeropendulum" style="width:500px;height:250px;">
 
 # System Simulation
-<img src="Images_directory/Simulation_Aeropendulum.PNG" alt="Simulation_Aeropendulum" style="width:1200px;height:569px;">
+<img src="Images_directory/Simulation_Aeropendulum.PNG" alt="Simulation_Aeropendulum" style="width:500px;height:250px;">
 
 # Hardware Setup
 <img src="Images_directory/Hardware_Setup.PNG" alt="Hardware_Setup_Aeropendulum" style="width:1200px;height:569px;">
