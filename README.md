@@ -32,7 +32,30 @@ The aeropendulum system integrates several key components to achieve precise con
 The software for controlling the aeropendulum was developed using C and is executed on the STM32F445RE microcontroller. The system’s de-sign is centered around acquiring sensor data from the MPU6050, pro-cessing it with a complementary filter, and then using a PID controller to adjust the speed of brushless motor via PWM signals. A breakdown of the key components of the software is described:
 
 ## Main control loop
+```
+  // Main loop to process incoming commands and execute PID control
+  while (1) {
+      // Check if new data has been received via USART
+      if (new_data_available) {
+    	  // Execute control logic when new data is available and the timer interrupt has fired (every 0.01 s)
+          if (data_buff[0] == '1' && Tc_flag == 1) {
 
+        	  float r = 45;								  // Desired setpoint (target angle)
+              y = Get_Angle_Inclination();	              // Measure the current angle
+              u = PID_Control(r, y);					  // Compute the control effort using PID
+              TIM1->CCR1 = u;							  // Apply the control effort by setting the PWM duty cycle
+              sprintf(buff_tx, "%1.3f\r\n", y);			  // Format the measured angle and send it via USART for feedback
+              send_str_it(buff_tx, strlen(buff_tx));
+              Tc_flag = 0;								  // Reset the control flag for the next cycle
+          }
+          else if (data_buff[0] == '0' && Tc_flag == 1) { // Command '0': Set motor PWM to a fixed value if Tc_flag is set
+
+              TIM1->CCR1 = 500;							  // Set PWM to a fixed value (Stop the motor)
+              Tc_flag = 0;								  // Reset the control flag
+          }
+      }
+  }
+``` 
 # Sampling time
 <img src="Images_directory/SamplingTime.PNG" alt="SamplingTime_Aeropendulum" style="width:500px;height:250px;">
 <img src="Images_directory/Timer_SamplingTime.PNG" alt="Timer_Aeropendulum" style="width:500px;height:250px;">
