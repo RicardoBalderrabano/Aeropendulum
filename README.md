@@ -122,7 +122,51 @@ float PID_Control(float setpoint, float process_variable) {
     return pwm_value;			    									// Return the PWM value that will be used to control the motor
 }
 ```
+## Communication interface
+The USART2_IRQHandler function is an interrupt service routine (ISR) for handling events related to USART2 communication. It manages data transmission and reception via the USART2 peripheral. This func-tion is triggered whenever there is a receive or transmit event in the USART2 peripheral. It checks the status of the USART2 registers and handles received data or sends data in the transmission buffer.
+```c
+// Handling USART2 Interruption for receiving and transmitting data
 
+volatile uint8_t rx_len, tx_len, cmd_received;
+uint8_t tx_len_max;
+
+volatile char buff_tx[100];      			// Transmission buffer
+volatile char  data_buff[100];    			// Reception buffer
+volatile uint8_t tx_len = 0;     			// Counter to keep track of the current byte being transmitted
+volatile uint8_t new_data_available = 0; 	// 1 when new data is available, 0 otherwise
+
+void USART2_IRQHandler(void) {
+    NVIC_ClearPendingIRQ(USART2_IRQn);	    			// Clear the pending interrupt flag for USART2
+
+    if ((USART2->SR >> USART_SR_RXNE_Pos) & 0x01) {	    // Check if the receive data register is not empty (RXNE)
+        	data_buff[0] = (char) USART2->DR;			// Read the received data
+        	new_data_available = 1; 					// Set the flag indicating new data is available
+    }
+
+    if ((USART2->SR >> USART_SR_TXE_Pos) & 0x01) {		// Check if the transmit data register is empty (TXE)
+        if (tx_len < tx_len_max) {						// If there are still bytes to send, load the next byte from buff_tx
+            USART2->DR = buff_tx[++tx_len];
+        } else {
+            // All data has been transmitted, wait for the transmission to complete (TC)
+            USART2->CR1 &= ~(0x01 << USART_CR1_TXEIE_Pos); // Disable TXE interrupt
+        }
+    }
+
+    if ((USART2->SR >> USART_SR_TC_Pos) & 0x01) {			// Check if the transmission is complete (TC)
+        tx_len = 0; 										// Reset the transmission length counter
+        USART2->CR1 &= ~(0x01 << USART_CR1_TXEIE_Pos); 		// Disable TXE interrupt if it’s still enabled
+    }
+}
+
+// Function to send a string via USART using interrupts
+void send_str_it(volatile char *buff, uint8_t len) {
+    tx_len = 0;                						// Reset the transmission counter
+    tx_len_max = len - 1;       					// Set the maximum length of data to be sent
+    buff_tx[0] = buff[0];       					// Load the first byte into the transmit buffer
+    USART2->DR = buff_tx[0];    					// Start transmitting the first byte
+    USART2->CR1 |= (0x01 << USART_CR1_TXEIE_Pos); 	// Enable TXE interrupt to send the rest of the data
+}
+```
 # PID Tunning
 
 To tune the PID coefficients, the Ziegler-Nichols method was used. It involves determining the critical gain (K_u) and critical period (T_u) of the system by setting the integral and derivative gains to zero and gradually increasing the proportional gain until the system reaches sustained oscillations.
