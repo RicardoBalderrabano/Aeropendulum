@@ -1,7 +1,10 @@
 # Aeropendulum
 Aeropendulum PID control for angular position
 # Description
+
+<p align="center">
   ![Aeropendulo1_first](Images_directory/Aeropendulo1_first.gif)
+</p>
 </br>
 This project is centered on the development of a PID controller for the angular position of an aeropendulum. The primary goal was to apply concepts from system dynamics, control theory, and embedded systems programming.
 
@@ -14,7 +17,3 @@ Following the implementation of the control logic, sensor fusion was employed to
 A simple interface was developed in LabVIEW to facilitate system activation and deactivation, as well as to provide real-time feedback on the system's movement.
 
 
-//CSS
-p {
-  text-align: center;
-}
