@@ -5,8 +5,6 @@ Aeropendulum - PID control for angular position
 <p align="center">
   <img src="Images_directory/Aeropendulo1_first.gif" alt="Aeropendulum" style="width:320px;height:569px;">
 </p>
-
-
 </br>
 This project is centered on the development of a PID controller for the angular position of an aeropendulum. The primary goal was to apply concepts from system dynamics, control theory, and embedded systems programming.
 
@@ -19,11 +17,19 @@ Following the implementation of the control logic, sensor fusion was employed to
 A simple interface was developed in LabVIEW to facilitate system activation and deactivation, as well as to provide real-time feedback on the system's movement.
 
 # Mathematical Model
+<img src="Images_directory/MathematicalModel_Aeropendulum.png" alt="MathematicalModel_Aeropendulum" style="width:1200px;height:569px;">
 # System Simulation
+<img src="Images_directory/Simulation_Aeropendulum.png" alt="Simulation_Aeropendulum" style="width:1200px;height:569px;">
 # Hardware Setup
+<img src="Images_directory/Hardware_Setup.png" alt="Hardware_Setup_Aeropendulum" style="width:1200px;height:569px;">
 # Sampling time
+<img src="Images_directory/SamplingTime.png" alt="SamplingTime_Aeropendulum" style="width:1200px;height:569px;">
+<img src="Images_directory/Timer_SamplingTime.png" alt="Timer_Aeropendulum" style="width:1200px;height:569px;">
 # PID Tunning
+<img src="Images_directory/PID_Tunning.png" alt="PID_Tunning_Aeropendulum" style="width:1200px;height:569px;">
+<img src="Images_directory/PID_Tunning2.png" alt="PID_Tunning2_Aeropendulum" style="width:1200px;height:569px;">
 # HMI Interface
+<img src="Images_directory/Interface.png" alt="Interface_Aeropendulum" style="width:582px;height:706px;">
 # PID Control Test
-
+<img src="Images_directory/TestPID_Aeropendulum.png" alt="Test_PID_Aeropendulum" style="width:1200px;height:px;">
 
