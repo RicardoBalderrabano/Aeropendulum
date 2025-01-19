@@ -32,7 +32,7 @@ The aeropendulum system integrates several key components to achieve precise con
 The software for controlling the aeropendulum was developed using C and is executed on the STM32F445RE microcontroller. The system’s de-sign is centered around acquiring sensor data from the MPU6050, pro-cessing it with a complementary filter, and then using a PID controller to adjust the speed of brushless motor via PWM signals. A breakdown of the key components of the software is described:
 
 ## Main control loop
-```
+```c
   // Main loop to process incoming commands and execute PID control
   while (1) {
       // Check if new data has been received via USART
