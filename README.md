@@ -18,6 +18,7 @@ A simple interface was developed in LabVIEW to facilitate system activation and 
 
 # Mathematical Model
 To effectively control the propeller pendulum system, an accurate mathematical model of the dynamics of the system is first obtained.
+
 <img src="Images_directory/MathematicalModel_Aeropendulum.PNG" alt="MathematicalModel_Aeropendulum" style="width:500px;height:250px;">
   
 # System Simulation
