@@ -18,4 +18,12 @@ Following the implementation of the control logic, sensor fusion was employed to
 
 A simple interface was developed in LabVIEW to facilitate system activation and deactivation, as well as to provide real-time feedback on the system's movement.
 
+# Mathematical Model
+# System Simulation
+# Hardware Setup
+# Sampling time
+# PID Tunning
+# HMI Interface
+# PID Control Test
+
 
