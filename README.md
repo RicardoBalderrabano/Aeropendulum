@@ -37,3 +37,11 @@ A simple interface was developed in LabVIEW to facilitate system activation and 
 
 # PID Control Test
 <img src="Images_directory/TestPID_Aeropendulum.PNG" alt="Test_PID_Aeropendulum" style="width:500px;height:600px;">
+
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
