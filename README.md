@@ -2,26 +2,6 @@
 Aeropendulum - PID control for angular position
 # Description
 
-
-
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-body {
-  background-color: linen;
-}
-
-h1 {
-  color: maroon;
-  margin-left: 40px;
-}
-</style>
-</head>
-<body>
-
-<h1>This is a heading</h1>
-<h1>Description</h1>  
 <p align="center">
   <img src="Images_directory/Aeropendulo1_first.gif" alt="Aeropendulum" style="width:320px;height:569px;">
 </p>
@@ -40,7 +20,7 @@ A simple interface was developed in LabVIEW to facilitate system activation and 
 <img src="Images_directory/MathematicalModel_Aeropendulum.PNG" alt="MathematicalModel_Aeropendulum" style="width:500px;height:250px;">
 
 # System Simulation
-<img src="Images_directory/Simulation_Aeropendulum.PNG" alt="Simulation_Aeropendulum" style="width:500px;height:250px;">
+<img src="Images_directory/Simulation_Aeropendulum.PNG" alt="Simulation_Aeropendulum" style="width:500px;height:250px;" align:center>
 
 # Hardware Setup
 <img src="Images_directory/Hardware_Setup.PNG" alt="Hardware_Setup_Aeropendulum" style="width:500px;height:250px;">
@@ -57,6 +37,3 @@ A simple interface was developed in LabVIEW to facilitate system activation and 
 
 # PID Control Test
 <img src="Images_directory/TestPID_Aeropendulum.PNG" alt="Test_PID_Aeropendulum" style="width:500px;height:600px;">
-
-</body>
-</html>
