@@ -187,7 +187,7 @@ float voltage_to_pwm(float voltage){
 ```
 ## Timer configuration for PWM generation
 
-<img src="Images_directory/Burshless_PWM.PNG" alt="Brushless_PWM" style="width:500px;height:250px;">
+<img src="Images_directory/Brushless_PWM.PNG" alt="Brushless_PWM" style="width:500px;height:250px;">
 
 Below is the section code where the timer is configured:
 
