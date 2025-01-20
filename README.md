@@ -1,6 +1,6 @@
 # Aeropendulum
 Aeropendulum - PID control for angular position
-# Description
+## Description
 
 <p align="center">
   <img src="Images_directory/Aeropendulo1_first.gif" alt="Aeropendulum" style="width:320px;height:569px;">
@@ -16,15 +16,19 @@ Following the implementation of the control logic, sensor fusion was employed to
 
 A simple interface was developed in LabVIEW to facilitate system activation and deactivation, as well as to provide real-time feedback on the system's movement.
 
-# Mathematical Model
+## Mathematical Model
 To effectively control the propeller pendulum system, an accurate mathematical model of the dynamics of the system is first obtained.
 
 <img src="Images_directory/MathematicalModel_Aeropendulum.PNG" alt="MathematicalModel_Aeropendulum" style="width:500px;height:250px;">
   
-# System Simulation
+## System Simulation
 To carry out the simulation was designed a Simulink diagram that repre-sents the non-linear model from the system.  
 <img src="Images_directory/Simulation_Aeropendulum.PNG" alt="Simulation_Aeropendulum" style="width:500px;height:250px;">
-  
+
+## Stability 
+The analysis using the Lyapunov criteria, along with reachability and controllability assessments, provides a comprehensive understanding of the aeropendulum’s dynamics and control capabilities. The system's stability, confirmed through Lyapunov's method, ensures that the pendu-lum can be maintained in the upright position over time. The confirmed reachability and controllability further guarantee that the system can be effectively controlled and maneuvered to achieve various states. These results validate the effectiveness of the control strategies implemented in the project and support the reliability and robustness of the embedded system design. 
+<img src="Images_directory/Stability_Aeropendulum.PNG" alt="Stability_Aeropendulum" style="width:500px;height:250px;">
+
 # Hardware Setup
 The aeropendulum system integrates several key components to achieve precise control and stabilization of an inverted pendulum mounted on a rotating base. The primary components include the STM32F446RE mi-crocontroller, the MPU6050 sensor, a brushless motor, and an Electronic Speed Controller (ESC). Each component plays a crucial role in the sys-tem's overall functionality.  
 <img src="Images_directory/Hardware_Setup.PNG" alt="Hardware_Setup_Aeropendulum" style="width:500px;height:250px;">
