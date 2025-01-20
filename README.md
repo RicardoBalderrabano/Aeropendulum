@@ -63,11 +63,42 @@ The core of the program operates within a loop that continuously reads sensor da
       }
   }
 ```
-In the [main](https://github.com/RicardoBalderrabano/Aeropendulum/blob/9544bedcff48c3004356c57dc7b6dc98bf6e49e6/PID_2/Core/Src/main.c) control loop, the Tc_flag is set by an Interrupt Service Routine (ISR) to implement a 0.01-second sampling interval for the PID control. To achieve this, the timer and its associated ISR were configured to generate an event every 0.01 seconds, based on a microcontroller clock speed of 84 MHz. The following calculations were used to determine the appropriate settings for the timer configuration:
 
 ## Sampling time
+
+For deriving the sampling time of the algorithm, it must be considering the dynamics of the system. For this reason, a model was developed in Matlbab-Simulink with the real value parameters of the system where the following eigenvalues were obtained:
+
 <img src="Images_directory/SamplingTime.PNG" alt="SamplingTime_Aeropendulum" style="width:500px;height:250px;">
+
+In the [main](https://github.com/RicardoBalderrabano/Aeropendulum/blob/9544bedcff48c3004356c57dc7b6dc98bf6e49e6/PID_2/Core/Src/main.c) control loop, the Tc_flag is set by an Interrupt Service Routine (ISR) to implement a 0.01-second sampling interval for the PID control. To achieve this, the timer and its associated ISR were configured to generate an event every 0.01 seconds, based on a microcontroller clock speed of 84 MHz. The following calculations were used to determine the appropriate settings for the timer configuration:
+
 <img src="Images_directory/Timer_SamplingTime.PNG" alt="Timer_Aeropendulum" style="width:500px;height:250px;">
+
+### Timer Configuration and Interrupt Service Routine (ISR) 
+```c
+// Configure TIMER 2 to generate an update event every 0.01 seconds
+void TIM2_PID_setup(void) {
+
+    RCC->APB1ENR |= (1 << RCC_APB1ENR_TIM2EN_Pos);	// Enable the clock for TIM2 peripheral
+    TIM2->PSC = 8400 - 1;					// Set prescaler to slow the 84 MHz clock down to 10 kHz (84 MHz / 8400)
+    TIM2->ARR = 100 - 1;					// Set auto-reload register to 100 for a 0.01-second interval (10 kHz / 100 = 100 Hz or 0.01 s)
+    TIM2->DIER |= (1 << TIM_DIER_UIE_Pos);	// Enable update interrupt on timer overflow
+    TIM2->CR1 |= (1 << TIM_CR1_CEN_Pos);	// Start the timer by enabling the counter
+    NVIC_SetPriority(TIM2_IRQn, 0);			// Set priority level 0 for TIM2 interrupt
+    NVIC_EnableIRQ(TIM2_IRQn);				// Enable the TIM2 interrupt in the NVIC to handle the timer events
+}
+
+// ISR for Timer 2, triggered every 0.01 seconds based on timer overflow
+volatile uint8_t Tc_flag = 0;					//Control Loop Flag
+
+void TIM2_IRQHandler(void) {					// TIM2 Interrupt Handler - Called when a timer overflow occurs for TIM2
+    if (TIM2->SR & TIM_SR_UIF) {				// Check if the update interrupt flag (UIF) is set (timer overflowed)
+        TIM2->SR &= ~(1 << TIM_SR_UIF_Pos);	    // Clear the update interrupt flag to allow the next interrupt
+        Tc_flag = 1;	        				// Set flag to signal the control loop to run
+    }
+}
+```
+This ISR ensures that the control loop executes at regular intervals of 0.01 seconds, enabling timely updates and maintaining the performance of the PID control system.
 
 ## Sensor Data Acquisition
 The MPU6050 sensor is used to measure the tilt angle of the pendu-lum. It provides both accelerometer and gyroscope data, which are fused using a complementary filter to compute the pendulum’s inclination angle. The sensor is read via I2C communication.
@@ -115,6 +146,8 @@ To smooth out the sensor data and combine accelerometer and gyro-scope informati
 ```
 ## PID Controller
 The PID controller calculates the control output (motor speed) based on the error between the desired angle (setpoint) and the current angle (process variable). The proportional, integral, and derivative terms are computed and summed to generate the control signal. The output of the PID controller is then converted to a PWM signal to control the motor's speed.
+
+<img src="Images_directory/PID_Aeropendulum.PNG" alt="PID__Aeropendulum" style="width:500px;height:250px;">
 
 ```c
 /* Function to implement PID control */
