@@ -63,8 +63,9 @@ The core of the program operates within a loop that continuously reads sensor da
       }
   }
 ```
+In the [main](https://github.com/RicardoBalderrabano/Aeropendulum/blob/9544bedcff48c3004356c57dc7b6dc98bf6e49e6/PID_2/Core/Src/main.c) control loop, the Tc_flag is set by an Interrupt Service Routine (ISR) to implement a 0.01-second sampling interval for the PID control. To achieve this, the timer and its associated ISR were configured to generate an event every 0.01 seconds, based on a microcontroller clock speed of 84 MHz. The following calculations were used to determine the appropriate settings for the timer configuration:
 
-# Sampling time
+## Sampling time
 <img src="Images_directory/SamplingTime.PNG" alt="SamplingTime_Aeropendulum" style="width:500px;height:250px;">
 <img src="Images_directory/Timer_SamplingTime.PNG" alt="Timer_Aeropendulum" style="width:500px;height:250px;">
 
