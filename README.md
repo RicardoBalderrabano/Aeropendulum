@@ -161,6 +161,75 @@ float PID_Control(float setpoint, float process_variable) {
     return pwm_value;			    									// Return the PWM value that will be used to control the motor
 }
 ```
+## PID Tunning
+
+To tune the PID coefficients, the Ziegler-Nichols method was used. It involves determining the critical gain (K_u) and critical period (T_u) of the system by setting the integral and derivative gains to zero and gradually increasing the proportional gain until the system reaches sustained oscillations.
+
+<img src="Images_directory/PID_Tunning.PNG" alt="PID_Tunning_Aeropendulum" style="width:500px;height:250px;">
+<img src="Images_directory/PID_Tunning2.PNG" alt="PID_Tunning2_Aeropendulum" style="width:500px;height:250px;">
+
+## Compute PWM from voltage required
+The voltage_to_pwm function converts a control voltage into a PWM signal, ensuring the output stays within a defined range. 
+```c
+// RELATIONSHIP BRUSHLESS MOTOR A2212 - MAX RPM
+#define MAX_RPM 12000  // Maximum RPM at full throttle with 12V supply (1000 KV * 12V)
+#define K_t 0.00955    // Torque constant in Nm/A
+// PWM LIMITS (1ms to 2ms)
+#define MIN_PWM 598    // Minimum PWM value (corresponding to minimum duty cycle - 1ms pulse width)
+#define MAX_PWM 646    // Maximum PWM value (corresponding to maximum duty cycle - 2ms pulse width)
+
+// Function to map the control input (voltage) to a PWM signal
+float voltage_to_pwm(float voltage){
+    if (voltage > MAX_RPM) voltage = MAX_RPM;  // Clamp RPM to max RPM
+    if (voltage < 0) voltage = 0;              // Clamp RPM to min RPM
+    return (uint32_t)((voltage / MAX_RPM) * (MAX_PWM - MIN_PWM) + MIN_PWM);	// Map the RPM to the PWM range [MIN_PWM, MAX_PWM]
+}
+```
+## Timer configuration for PWM generation
+
+<img src="Images_directory/Burshless_Control.PNG" alt="Brushless_Control" style="width:500px;height:250px;">
+
+Below is the section code where the timer is configured:
+
+```c
+// TIMER CONFIGURATION FOR PWM
+void TIM1_PWM_setup() {
+
+    /* TIM1 SetUp */
+    RCC->APB2ENR |= (1 << RCC_APB2ENR_TIM1EN_Pos);     // Enable clock to TIM1
+
+    /* GPIO SetUp (PA8 -> TIM1_CH1) */
+    RCC->AHB1ENR |= (1 << RCC_AHB1ENR_GPIOAEN_Pos);    // Enable GPIOA clock
+    GPIOA->MODER |= (2 << 16);                         // Set PA8 to Alternate function mode
+    GPIOA->AFR[1] |= (1 << 0);                         // Set AF1 (TIM1_CH1) for PA8
+    GPIOA->OSPEEDR |= (3 << 16);                       // High Speed for PA8
+
+    /* CR1 Configuration */
+    TIM1->CR1 &= ~(1 << TIM_CR1_UDIS_Pos);             // Update event enabled
+    TIM1->CR1 &= ~(1 << TIM_CR1_URS_Pos);              // Generation of an update interrupt
+    TIM1->CR1 &= ~(1 << TIM_CR1_DIR_Pos);              // Upcounting direction
+    TIM1->CR1 &= ~(0x03 << TIM_CR1_CMS_Pos);           // Edge-aligned mode
+    TIM1->CR1 |= (1 << TIM_CR1_ARPE_Pos);              // Auto-reload preload enabled
+
+    /* Channel 1 Configuration */
+    TIM1->CCMR1 &= ~(0x03 << TIM_CCMR1_CC1S_Pos);      // TIM1_CH1 configured as output
+    TIM1->CCMR1 |= (1 << TIM_CCMR1_OC1PE_Pos);         // Enable preload for CCR1
+    TIM1->CCMR1 |= (0x6 << TIM_CCMR1_OC1M_Pos);        // PWM Mode 1 (Active if CNT < CCR1)
+
+    TIM1->CCER |= (1 << TIM_CCER_CC1E_Pos);            // Enable output for channel 1
+    TIM1->CCER &= ~(1 << TIM_CCER_CC1P_Pos);           // Active high (default)
+
+    TIM1->PSC = 163 - 1;                               // Set prescaler for 1 kHz timer clock
+    TIM1->ARR = 10306 - 1;                             // Set auto-reload for a 50 Hz PWM signal
+    TIM1->CCR1 = 0;                                    // 0
+
+    TIM1->EGR |= (1 << TIM_EGR_UG_Pos);                // Generate an update event
+
+    /* Enable the output for the TIM1 channel */
+    TIM1->BDTR |= (1 << TIM_BDTR_MOE_Pos);             // Main output enable (necessary for TIM1)
+    TIM1->CR1 |= (1 << TIM_CR1_CEN_Pos);               // Enable the counter
+}
+```
 ## Communication interface
 The USART2_IRQHandler function is an interrupt service routine (ISR) for handling events related to USART2 communication. It manages data transmission and reception via the USART2 peripheral. This func-tion is triggered whenever there is a receive or transmit event in the USART2 peripheral. It checks the status of the USART2 registers and handles received data or sends data in the transmission buffer.
 ```c
@@ -206,23 +275,24 @@ void send_str_it(volatile char *buff, uint8_t len) {
     USART2->CR1 |= (0x01 << USART_CR1_TXEIE_Pos); 	// Enable TXE interrupt to send the rest of the data
 }
 ```
-# PID Tunning
-
-To tune the PID coefficients, the Ziegler-Nichols method was used. It involves determining the critical gain (K_u) and critical period (T_u) of the system by setting the integral and derivative gains to zero and gradually increasing the proportional gain until the system reaches sustained oscillations.
-
-<img src="Images_directory/PID_Tunning.PNG" alt="PID_Tunning_Aeropendulum" style="width:500px;height:250px;">
-<img src="Images_directory/PID_Tunning2.PNG" alt="PID_Tunning2_Aeropendulum" style="width:500px;height:250px;">
   
-# HMI Interface
+## HMI Interface
 
 The Human Machine Interface (HMI) to control the aeropendulum was made using LABVIEW, it is a platform and development environment for designing systems, with a graphical visual programming language de-signed for testing, control and design hardware and software systems, simulated or real and embedded.
 
 <img src="Images_directory/Interface.PNG" alt="Interface_Aeropendulum" style="width:500px;height:250px;">
   
-# PID Control Test
+## PID Control Test
 The test includes changing the reference of the desired angular position of the aeropendulum. The angles tested are 20°, 45° and 60° to ob-serve the response of the system and evaluate its ability to reach and maintain the setpoint under different conditions. The test aims to analyze the system's stability and the performance of the PID controller.
 
 <img src="Images_directory/TestPID_Aeropendulum.PNG" alt="Test_PID_Aeropendulum" style="width:500px;height:600px;">
+
+## Conclusion
+This project successfully implemented a PID control system on an STM32 microcontroller to stabilize an aeropendulum. Using I2C commu-nication for sensor data acquisition, USART for real-time monitoring, and PWM control for motor actuation, the system demonstrated the practical integration of embedded systems and control algorithms. 
+
+The experimental results revealed an average settling time of 3.5 sec-onds, though this varied with different reference angles. The best perfor-mance was observed at a reference of 45°, where the system achieved the most stable and responsive behavior. However, the noisy data from the gyroscope, even with the use of a complementary filter, posed a challenge. This indicates a need for further improvement in sensor data processing, such as calibrating the gyroscope and implementing an extended Kalman filter for sensor fusion, potentially incorporating a magnetometer to en-hance accuracy.
+
+The PID tuning via the Ziegler-Nichols method provided a functional starting point, but the coefficients could be further optimized depending on specific performance priorities, such as reducing settling time or mini-mizing overshoot. Overall, while the PID controller met the project’s ob-jectives, refining the filtering of sensor data and adjusting control param-eters could significantly enhance system performance. This project high-lights the effectiveness of embedded systems and control theory in robot-ics, while also identifying areas for future improvement and research.
 
 
 
