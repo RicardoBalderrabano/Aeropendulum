@@ -1,6 +1,5 @@
 # Aeropendulum
 Aeropendulum - PID control for angular position
-## Description
 
 <p align="center">
   <img src="Images_directory/Aeropendulo1_first.gif" alt="Aeropendulum" style="width:320px;height:569px;">
